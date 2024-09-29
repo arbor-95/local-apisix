@@ -88,7 +88,7 @@ function _M.rewrite(conf, ctx)
     local consumers = consumer_mod.consumers_kv(plugin_name, consumer_conf, "key")
     local consumer = consumers[key]
     if not consumer then
-        return 401, {message = "Invalid API key in request"}
+        return 401, {message = "无效的Key信息"}
     end
     core.log.info("consumer: ", core.json.delay_encode(consumer))
 
