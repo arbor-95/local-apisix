@@ -32,6 +32,7 @@ local function new()
     end
 
     local etcd_conf = clone_tab(local_conf.etcd)
+    local ssl_conf = clone_tab(local_conf.ssl)
     local prefix = etcd_conf.prefix
     etcd_conf.http_host = etcd_conf.host
     etcd_conf.host = nil
@@ -49,6 +50,7 @@ local function new()
         if etcd_conf.tls.cert then
             etcd_conf.ssl_cert_path = etcd_conf.tls.cert
             etcd_conf.ssl_key_path = etcd_conf.tls.key
+            etcd_conf.trusted_ca = ssl_conf.ssl_trusted_certificate
         end
 
         if etcd_conf.tls.sni then
