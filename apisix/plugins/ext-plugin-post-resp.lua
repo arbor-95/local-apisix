@@ -53,6 +53,7 @@ end
 
 local function get_response(ctx, http_obj)
     local ok, err = http_obj:connect({
+        ssl_verify = false,
         scheme = ctx.upstream_scheme,
         host = ctx.picked_server.host,
         port = ctx.picked_server.port,
