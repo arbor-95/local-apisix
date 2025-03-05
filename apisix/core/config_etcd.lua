@@ -257,6 +257,11 @@ local function do_run_watch(premature)
         end
 
         local rev = tonumber(res.result.header.revision)
+        if rev == nil then
+            log.warn("receive a invalid revision header, header: ", inspect(res.result.header))
+            cancel_watch(http_cli)
+            break
+        end
         if rev > watch_ctx.rev then
             watch_ctx.rev = rev + 1
         end
@@ -284,7 +289,8 @@ local function run_watch(premature)
 
     local ok, err = ngx_thread_wait(run_watch_th, check_worker_th)
     if not ok then
-        log.error("check_worker thread terminates failed, retart checker, error: " .. err)
+        log.error("run_watch or check_worker thread terminates failed",
+                        " restart those threads, error: ", inspect(err))
     end
 
     ngx_thread_kill(run_watch_th)
@@ -847,7 +853,7 @@ local function _automatic_fetch(premature, self)
                             i = i + 1
                             ngx_sleep(backoff_duration)
                             _, err = sync_data(self)
-                            if not err or not string.find(err, err_etcd_unhealthy_all) then
+                            if not err or not core_str.find(err, err_etcd_unhealthy_all) then
                                 log.warn("reconnected to etcd")
                                 reconnected = true
                                 break
